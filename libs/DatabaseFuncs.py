@@ -36,7 +36,7 @@ class Database:
         return False
 
     def __connect_database(self):
-        if not os.path.exists(self.dbpath()):
+        if not os.path.exists('./database'):
             mkdir("./database")
         self.db = connect(self.dbpath())
         self.cursor = self.db.cursor()
@@ -108,10 +108,6 @@ class Database:
         self.__remove(l_data['id'])
 
     def __get_from_clients(self, id: str) -> client_data | None:
-        all_clients = self.cursor.execute(f"""
-        SELECT * FROM clients
-        """).fetchall()
-
         client = self.cursor.execute(f"SELECT * FROM clients WHERE id='{id}'").fetchone()
 
         return client_data(client[-3], client[-2])
