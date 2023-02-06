@@ -1,6 +1,7 @@
 from sqlite3 import connect
 from os.path import exists
-from os import remove
+from os import remove, mkdir
+import os.path
 from libs.jsonData import *
 
 import string
@@ -35,6 +36,8 @@ class Database:
         return False
 
     def __connect_database(self):
+        if not os.path.exists(self.dbpath()):
+            mkdir("./database")
         self.db = connect(self.dbpath())
         self.cursor = self.db.cursor()
 
