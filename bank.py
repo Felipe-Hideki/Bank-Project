@@ -34,7 +34,7 @@ class App:
         if returned == None:
             print('Operation Failed')
             return
-        self.__c_data = returned
+        self.__c_data = client_data(dictionary=returned.extract())
 
     def withdraw(self):
         res = input("Enter 'cancel' if you want to cancel the operation\nValue to withdraw: ")
@@ -52,7 +52,7 @@ class App:
         if returned == None:
             print('Operation Failed')
             return
-        self.__c_data = returned
+        self.__c_data = client_data(dictionary=returned.extract())
 
     def Delete_account(self):
         clear()
@@ -95,7 +95,7 @@ class App:
                 self.logout()
                 return
             case _:
-                print("Inputted choice out-of-range")
+                return
         input("Press enter to continue")
 
     def loop(self):
@@ -155,6 +155,8 @@ class App:
                         continue
                     case 3:
                         self.__continue = False
+                        continue
+                    case _:
                         continue
 
 

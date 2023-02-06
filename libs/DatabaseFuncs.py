@@ -48,7 +48,6 @@ class Database:
             self.cursor.execute("CREATE TABLE logins(login, psk, id)")
         else:
             self.__connect_database()
-        print(self.cursor.execute("SELECT * FROM clients").fetchall())
 
     def login(self, client: login_json) -> tuple[client_json, login_json] | tuple[None, None]:
         data = client.extract()
@@ -92,7 +91,7 @@ class Database:
         if client is None:
             return None
 
-        return self.__update_client(data['id'], float(client['money'])-amount)
+        return client_json(self.__update_client(data['id'], float(client['money'])-amount))
     
     def deposit(self, client: login_json, amount: float) -> client_json | None:
         data = login_data(dictionary=client.extract())
@@ -101,7 +100,7 @@ class Database:
         if client is None:
             return None
 
-        return self.__update_client(data['id'], float(client['money'])+amount)
+        return client_json(self.__update_client(data['id'], float(client['money'])+amount))
 
     def delete_account(self, l_json: login_json) -> None:
         l_data = login_data(dictionary=l_json.extract())
@@ -116,6 +115,16 @@ class Database:
         client = self.cursor.execute(f"SELECT * FROM clients WHERE id='{id}'").fetchone()
 
         return client_data(client[-3], client[-2])
+
+    def __update_client(self, id: str, money: float) -> client_data | None:
+        client = self.cursor.execute(f"SELECT * FROM clients WHERE id='{id}'").fetchone()
+        if client is None:
+            return None
+
+        self.cursor.execute(f"UPDATE clients SET money={money} WHERE id='{id}'")
+        self.db.commit()
+
+        return client_data(client[0], money)
 
     def __has_login(self, login: str) -> bool:
         client = self.cursor.execute(f"""SELECT * FROM logins WHERE login='{login}'""").fetchone()
